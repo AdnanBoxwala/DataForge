@@ -1,0 +1,20 @@
+[project]
+name = "dataforge"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "AdnanBoxwala", email = "143093290+AdnanBoxwala@users.noreply.github.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "awscliv2>=2.3.1",
+    "k9s>=1.0.56",
+]
+
+[project.scripts]
+dataforge = "dataforge.main:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
