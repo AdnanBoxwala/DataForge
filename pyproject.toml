@@ -8,8 +8,10 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "asammdf>=8.8.25",
     "awscliv2>=2.3.1",
     "k9s>=1.0.56",
+    "pre-commit>=4.6.2",
 ]
 
 [project.scripts]
