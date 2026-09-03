@@ -4,11 +4,11 @@ from collections.abc import Callable
 
 from dataforge.structs.result import CheckResult
 
-Checkfunc = Callable[..., CheckResult]
-_CHECK_REGISTRY: dict[str, Checkfunc] = {}
+CheckFunc = Callable[..., CheckResult]
+_CHECK_REGISTRY: dict[str, CheckFunc] = {}
 
 
-def register_check(name: str) -> Callable[[Checkfunc], Checkfunc]:
+def register_check(name: str) -> Callable[[CheckFunc], CheckFunc]:
     """Decorator to register a check function.
 
     Args:
@@ -17,13 +17,13 @@ def register_check(name: str) -> Callable[[Checkfunc], Checkfunc]:
     Returns:
         A decorator that registers the check function.
     """
-    def decorator(func: Checkfunc) -> Checkfunc:
+    def decorator(func: CheckFunc) -> CheckFunc:
         _CHECK_REGISTRY[name] = func
         return func
     return decorator
 
 
-def get_check(name: str) -> Checkfunc:
+def get_check(name: str) -> CheckFunc:
     """Get a registered check function by name.
 
     Args:
