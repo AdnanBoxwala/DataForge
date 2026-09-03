@@ -1,5 +1,7 @@
+import logging
 from pathlib import Path
 
+from dataforge.enums.result import Result
 from dataforge.ingestion import get_ingestor_for
 from dataforge.structs.result import AnalysisResult
 from dataforge.structs.signal import SignalSet
@@ -7,10 +9,26 @@ from dataforge.validation import get_check
 from dataforge.validation import load_rules_from_yaml
 from dataforge.reporting import JSONReporter
 
-def run(measurement_file: Path, rules_yaml: Path) -> Path:
-    """Run configured checks against an ingested signal set."""
+logger = logging.getLogger(__name__)
+
+
+def run(measurement_file: Path, rules_yaml: Path) -> Result:
+    """Run configured checks against an ingested signal set.
+    
+    Args:
+        measurement_file: Path to the measurement file to be validated.
+        rules_yaml: Path to the YAML file containing validation rules.
+    """
+    if not measurement_file.exists():
+        raise FileNotFoundError(f"The measurement file '{measurement_file}' does not exist.")
+    if not rules_yaml.exists():
+        raise FileNotFoundError(f"The rules YAML file '{rules_yaml}' does not exist.")
+
+    logger.info(f"Starting analysis of '{measurement_file}' using rules '{rules_yaml}'.")
+
     # INGESTION
     ingestor = get_ingestor_for(measurement_file)
+    logger.debug(f"Using ingestor {type(ingestor).__name__} for '{measurement_file}'.")
     signals: SignalSet = ingestor.load(measurement_file)
 
     # VALIDATION
@@ -18,13 +36,16 @@ def run(measurement_file: Path, rules_yaml: Path) -> Path:
     check_results = []
     for rule in rules:
         check_fn = get_check(rule["type"])
-        check_results.append(
-            check_fn(
-                channel=rule["channel"],
-                signals=signals,
-                **rule["parameters"],
-            )
+        logger.debug(f"Running check '{rule["type"]}' on channel '{rule["channel"]}'.")
+        result = check_fn(
+            channel=rule["channel"],
+            signals=signals,
+            **rule["parameters"],
         )
+        logger.debug(
+            f"Check '{rule["type"]}' on channel '{rule["channel"]}': {"PASSED" if result.passed else "FAILED"} - {result.message}"
+        )
+        check_results.append(result)
 
     result = AnalysisResult(
                 source_file=measurement_file,
@@ -34,4 +55,16 @@ def run(measurement_file: Path, rules_yaml: Path) -> Path:
 
     # REPORTING
     reporter = JSONReporter()
-    return reporter.generate(result)
+    reporter.generate(result)
+
+    failed = [check for check in check_results if not check.passed]
+    if failed:
+        logger.info(f"Analysis FAILED: {len(failed)} of {len(check_results)} checks failed.")
+        for check in failed:
+            logger.info(f"  {check.check_name} on {check.signal_name}: {check.message}")
+        return Result.FAIL
+    else:
+        logger.info(f"Analysis PASSED: all {len(check_results)} check(s) passed.")
+        return Result.PASS
+
+    

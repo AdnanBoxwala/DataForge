@@ -1,7 +1,10 @@
+import logging
 from pathlib import Path
 import yaml
 
 from dataforge.validation.base import CheckFunc, get_check
+
+logger = logging.getLogger(__name__)
 
 
 def load_rules_from_yaml(path: Path) -> list[dict]:
@@ -18,10 +21,13 @@ def load_rules_from_yaml(path: Path) -> list[dict]:
         ValueError: If the YAML is malformed, or references an unregistered
             check type.
     """
+    logger.debug(f"Loading rules from '{path}'.")
     with open(path, "r") as file:
         try:
             rules = yaml.safe_load(file)
         except yaml.YAMLError as e:
-            raise ValueError(f"Error parsing YAML file: {e}")
+            raise ValueError(f"Error parsing YAML file: {e}") from e
 
-    return rules["checks"]
+    checks = rules["checks"]
+    logger.info(f"Loaded {len(checks)} rule(s) from '{path}'.")
+    return checks

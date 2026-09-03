@@ -1,8 +1,11 @@
 from asammdf import MDF
+import logging
 from pathlib import Path
 
 from dataforge.ingestion.base import Ingestor, register_ingestor
 from dataforge.structs.signal import MeasurementSignal, SignalSet
+
+logger = logging.getLogger(__name__)
 
 
 @register_ingestor
@@ -29,6 +32,8 @@ class MDFIngestor(Ingestor):
         """
         if not path.exists():
             raise FileNotFoundError(f"The file '{path}' does not exist.")
+
+        logger.debug(f"Opening MDF file '{path}'.")
         with MDF(path) as mdf:
             signals = {}
             for channel in mdf.iter_channels():
@@ -36,6 +41,12 @@ class MDFIngestor(Ingestor):
                 timestamps = channel.timestamps
                 name = channel.name
                 unit = channel.unit
+
+                if name in signals:
+                    logger.warning(
+                        f"Duplicate channel name '{name}' in '{path}'; "
+                        "the previously loaded channel will be overwritten."
+                    )
 
                 signal = MeasurementSignal(
                     samples=samples,
@@ -45,5 +56,7 @@ class MDFIngestor(Ingestor):
                     source_file=str(path),
                 )
                 signals[name] = signal
+                logger.debug(f"Ingested channel 'name' ({len(samples)} samples, unit={unit}).")
 
+            logger.info(f"Loaded {len(signals)} channel(s) from '{path}'.")
             return SignalSet(signals=signals, source=path)

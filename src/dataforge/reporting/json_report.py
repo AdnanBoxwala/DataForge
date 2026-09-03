@@ -1,27 +1,28 @@
 import json
+import logging
 from datetime import datetime
 from pathlib import Path
 
 from dataforge.reporting.base import Reporter
 from dataforge.structs.result import AnalysisResult
 
+logger = logging.getLogger(__name__)
+
 
 class JSONReporter(Reporter):
     """Writes a `summary.json` containing check results."""
-    def generate(self, result: AnalysisResult) -> Path:
+    def generate(self, result: AnalysisResult):
         """Generate the analysis report.
 
         Args:
             result: The `AnalysisResult` to be reported.
-
-        Returns:
-            The path to the generated report file.
         """
         source_name = Path(result.source_file).stem
         run_name = f"{source_name}_{datetime.now():%Y%m%d_%H%M%S}"
         run_dir = Path("output") / run_name
         run_dir.mkdir(parents=True, exist_ok=True)
         report_path = run_dir / "summary.json"
+        logger.debug(f"Writing JSON report to '{report_path}'.")
 
         payload = {
             "source_file": str(result.source_file),
@@ -31,4 +32,4 @@ class JSONReporter(Reporter):
         }
         with report_path.open("w") as file:
             json.dump(payload, file, indent=4)
-        return report_path
+        logger.info(f"Report written to '{report_path}'.")
