@@ -219,4 +219,4 @@ __marimo__/
 # DataForge
 **/commands.txt
 **/.DS_Store
-**/settings.json
+.vscode/

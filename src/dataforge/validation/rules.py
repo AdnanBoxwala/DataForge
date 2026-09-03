@@ -24,4 +24,4 @@ def load_rules_from_yaml(path: Path) -> list[dict]:
         except yaml.YAMLError as e:
             raise ValueError(f"Error parsing YAML file: {e}")
 
-    return rules
+    return rules["checks"]

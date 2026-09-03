@@ -1,5 +1,13 @@
-from dataforge.ingestion import get_ingestor_for
-from dataforge.validation import get_check
+from pathlib import Path
+
+from dataforge.engine import run
+
 
 def main() -> None:
-    print("Hello from dataforge!")
+    measurement_file = Path("./data/sample/sample_speed.mf4")
+    rules_yaml = Path("./data/rules.yaml")
+
+    run(measurement_file, rules_yaml)
+
+if __name__ == "__main__":
+    main()

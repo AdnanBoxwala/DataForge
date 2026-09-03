@@ -1,7 +1,8 @@
+from asammdf import MDF
 from pathlib import Path
 
 from dataforge.ingestion.base import Ingestor, register_ingestor
-from dataforge.structs.signal import SignalSet
+from dataforge.structs.signal import MeasurementSignal, SignalSet
 
 
 @register_ingestor
@@ -26,4 +27,23 @@ class MDFIngestor(Ingestor):
             FileNotFoundError: If `path` does not exist.
             ValueError: If the file is not a valid MDF file.
         """
-        raise NotImplementedError
+        if not path.exists():
+            raise FileNotFoundError(f"The file '{path}' does not exist.")
+        with MDF(path) as mdf:
+            signals = {}
+            for channel in mdf.iter_channels():
+                samples = channel.samples
+                timestamps = channel.timestamps
+                name = channel.name
+                unit = channel.unit
+
+                signal = MeasurementSignal(
+                    samples=samples,
+                    timestamps=timestamps,
+                    name=name,
+                    unit=unit,
+                    source_file=str(path),
+                )
+                signals[name] = signal
+
+            return SignalSet(signals=signals, source=path)

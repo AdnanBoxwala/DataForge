@@ -1,5 +1,6 @@
 checks:
   - type: range
     channel: speed
-    min_value: 0
-    max_value: 232
+    parameters:
+      min_value: 0
+      max_value: 232
