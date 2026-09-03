@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from dataforge.structs.signal_set import SignalSet
+from dataforge.structs.signal import SignalSet
 
 _INGESTOR_REGISTRY: dict[str, type[Ingestor]] = {}
 

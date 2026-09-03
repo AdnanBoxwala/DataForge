@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from dataforge.ingestion.base import Ingestor, register_ingestor
-from dataforge.structs.signal_set import SignalSet
+from dataforge.structs.signal import SignalSet
 
 
 @register_ingestor
