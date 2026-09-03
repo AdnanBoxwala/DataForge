@@ -33,13 +33,44 @@ uv sync
 
 This creates a `.venv` and installs everything pinned in `uv.lock`, using the Python version specified in `.python-version` (uv will download it automatically if it's not already installed).
 
-### 4. Run the CLI
+## Usage
 
 ```bash
-uv run dataforge
+uv run dataforge <measurement_file.mf4> <rules.yaml>
 ```
 
-`uv run` executes commands inside the project's virtual environment without needing to activate it manually.
+Example, using the sample fixture and rules bundled in the repo:
+```bash
+uv run dataforge data/sample/sample_speed.mf4 data/rules.yaml
+```
+
+This ingests the `.mf4` file, runs each check defined in the rules YAML against the matching channel, and writes a JSON report. The path to the generated report is printed on completion.
+
+### Rules format
+
+Rules are defined in a YAML file, e.g. [`data/rules.yaml`](data/rules.yaml):
+```yaml
+checks:
+  - type: range
+    channel: speed
+    parameters:
+      min_value: 0
+      max_value: 232
+```
+
+## Project structure
+
+```
+src/dataforge/
+├── ingestion/       # MDF loading (asammdf)
+├── validation/      # rule loading + checks (range, dropout, stale-signal, ...)
+├── engine/          # wires ingestion -> validation -> reporting together
+├── reporting/       # report generation (JSON)
+├── structs/         # shared data types (SignalSet, AnalysisResult, ...)
+└── main.py          # CLI entry point
+```
+
+See [`PLAN.md`](PLAN.md) for full architecture and project context.
 
 ## Development
 
