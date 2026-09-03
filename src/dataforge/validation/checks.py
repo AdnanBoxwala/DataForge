@@ -36,5 +36,6 @@ def range_check(channel: str, signals: SignalSet, min_value: float, max_value: f
     return CheckResult(
         check_name="range",
         signal_name=channel,
+        parameters={"min_value": min_value, "max_value": max_value},
         passed=passed,
         message=message)

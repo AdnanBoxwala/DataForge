@@ -5,6 +5,7 @@ from dataforge.structs.result import AnalysisResult
 from dataforge.structs.signal import SignalSet
 from dataforge.validation import get_check
 from dataforge.validation import load_rules_from_yaml
+from dataforge.reporting import JSONReporter
 
 def run(measurement_file: Path, rules_yaml: Path):
     """Run configured checks against an ingested signal set."""
@@ -16,9 +17,9 @@ def run(measurement_file: Path, rules_yaml: Path):
     rules = load_rules_from_yaml(rules_yaml)
     check_results = []
     for rule in rules:
-        check = get_check(rule["type"])
+        check_fn = get_check(rule["type"])
         check_results.append(
-            check(
+            check_fn(
                 channel=rule["channel"],
                 signals=signals,
                 **rule["parameters"],
@@ -31,3 +32,5 @@ def run(measurement_file: Path, rules_yaml: Path):
             )
 
     # REPORTING
+    reporter = JSONReporter()
+    _ = reporter.generate(result)
