@@ -7,7 +7,7 @@ from dataforge.validation import get_check
 from dataforge.validation import load_rules_from_yaml
 from dataforge.reporting import JSONReporter
 
-def run(measurement_file: Path, rules_yaml: Path):
+def run(measurement_file: Path, rules_yaml: Path) -> Path:
     """Run configured checks against an ingested signal set."""
     # INGESTION
     ingestor = get_ingestor_for(measurement_file)
@@ -27,10 +27,11 @@ def run(measurement_file: Path, rules_yaml: Path):
         )
 
     result = AnalysisResult(
-                source_file=str(measurement_file),
+                source_file=measurement_file,
                 check_results=check_results,
+                rules_yaml=rules_yaml
             )
 
     # REPORTING
     reporter = JSONReporter()
-    _ = reporter.generate(result)
+    return reporter.generate(result)

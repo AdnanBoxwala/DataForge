@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass
@@ -39,8 +40,9 @@ class AnalysisResult:
         check_results: A list of `CheckResult` objects representing the results of individual checks.
     """
 
-    source_file: str
+    source_file: Path
     check_results: list[CheckResult]
+    rules_yaml: Path
 
     @property
     def passed(self) -> bool:

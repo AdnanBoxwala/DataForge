@@ -24,7 +24,8 @@ class JSONReporter(Reporter):
         report_path = run_dir / "summary.json"
 
         payload = {
-            "source_file": result.source_file,
+            "source_file": str(result.source_file),
+            "rules_yaml": str(result.rules_yaml),
             "passed": result.passed,
             "check_results": [check.to_dict() for check in result.check_results],
         }
