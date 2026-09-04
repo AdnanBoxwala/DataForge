@@ -20,6 +20,12 @@ dataforge = "dataforge.cli:main"
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: drives the installed console script in a subprocess (slower)",
+]
+
 [dependency-groups]
 dev = [
     "awscliv2>=2.3.1",
