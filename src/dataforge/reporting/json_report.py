@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class JSONReporter(Reporter):
     """Writes a `summary.json` containing check results."""
+
     def generate(self, result: AnalysisResult):
         """Generate the analysis report.
 

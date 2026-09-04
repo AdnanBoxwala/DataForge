@@ -49,13 +49,12 @@ class MDFIngestor(Ingestor):
                     )
 
                 signal = MeasurementSignal(
-                    samples=samples,
-                    timestamps=timestamps,
-                    name=name,
-                    unit=unit
+                    samples=samples, timestamps=timestamps, name=name, unit=unit
                 )
                 signals[name] = signal
-                logger.debug(f"Ingested channel '{name}' ({len(samples)} samples, unit={unit}).")
+                logger.debug(
+                    f"Ingested channel '{name}' ({len(samples)} samples, unit={unit})."
+                )
 
             logger.info(f"Loaded {len(signals)} channel(s) from '{path}'.")
             return SignalSet(signals=signals, source=path)

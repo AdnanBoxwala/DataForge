@@ -13,15 +13,17 @@ logger = logging.getLogger(__name__)
 
 def run(measurement_file: Path, rules_yaml: Path) -> Result:
     """Run configured checks against a measurement file.
-    
+
     Args:
         measurement_file: Path to the measurement file to be validated.
         rules_yaml: Path to the YAML file containing validation rules.
-    
+
     Returns:
         Result.PASS if all checks pass, Result.FAIL if any check fails.
     """
-    logger.info(f"Starting analysis of '{measurement_file}' using rules '{rules_yaml}'.")
+    logger.info(
+        f"Starting analysis of '{measurement_file}' using rules '{rules_yaml}'."
+    )
 
     # VALIDATION RULES
     rules = load_rules_from_yaml(rules_yaml)
@@ -35,22 +37,20 @@ def run(measurement_file: Path, rules_yaml: Path) -> Result:
     check_results = []
     for rule in rules:
         check_fn = get_check(rule["type"])
-        logger.debug(f"Running check '{rule["type"]}' on channel '{rule["channel"]}'.")
+        logger.debug(f"Running check '{rule['type']}' on channel '{rule['channel']}'.")
         check_result = check_fn(
             channel=rule["channel"],
             signals=signals,
             **rule["parameters"],
         )
         logger.debug(
-            f"Check '{rule["type"]}' on channel '{rule["channel"]}': {"PASSED" if check_result.passed else "FAILED"} - {check_result.message}"
+            f"Check '{rule['type']}' on channel '{rule['channel']}': {'PASSED' if check_result.passed else 'FAILED'} - {check_result.message}"
         )
         check_results.append(check_result)
 
     analysis_result = AnalysisResult(
-                source_file=measurement_file,
-                check_results=check_results,
-                rules_yaml=rules_yaml
-            )
+        source_file=measurement_file, check_results=check_results, rules_yaml=rules_yaml
+    )
 
     # REPORTING
     reporter = JSONReporter()
@@ -58,12 +58,12 @@ def run(measurement_file: Path, rules_yaml: Path) -> Result:
 
     failed = [check for check in check_results if not check.passed]
     if failed:
-        logger.info(f"Analysis FAILED: {len(failed)} of {len(check_results)} checks failed.")
+        logger.info(
+            f"Analysis FAILED: {len(failed)} of {len(check_results)} checks failed."
+        )
         for check in failed:
             logger.info(f"  {check.check_name} on {check.signal_name}: {check.message}")
         return Result.FAIL
     else:
         logger.info(f"Analysis PASSED: all {len(check_results)} check(s) passed.")
         return Result.PASS
-
-    

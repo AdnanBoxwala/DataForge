@@ -22,7 +22,7 @@ def load_rules_from_yaml(path: Path) -> list[dict]:
     """
     if not path.exists():
         raise FileNotFoundError(f"The rules YAML file '{path}' does not exist.")
-    
+
     logger.debug(f"Loading rules from '{path}'.")
     with open(path, "r") as file:
         try:

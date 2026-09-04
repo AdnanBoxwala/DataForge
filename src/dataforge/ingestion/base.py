@@ -9,8 +9,7 @@ _INGESTOR_REGISTRY: dict[str, type[Ingestor]] = {}
 
 
 class Ingestor(ABC):
-    """Abstract base class for data ingestors.
-    """
+    """Abstract base class for data ingestors."""
 
     #: File extension that this ingestor can handle. For example, ".mf4".
     #: Subclasses should set this attribute to specify the file extension they support.
@@ -22,7 +21,7 @@ class Ingestor(ABC):
 
         Args:
             path: Path to the measurement file.
-        
+
         Returns:
             Structured data containing every channel found in the file.
 

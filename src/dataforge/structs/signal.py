@@ -14,6 +14,7 @@ class MeasurementSignal:
         timestamps: 1D array of sample times, in seconds.
         unit: Physical unit, e.g. "km/h".
     """
+
     name: str
     samples: NDArray
     timestamps: NDArray
@@ -28,6 +29,7 @@ class SignalSet:
         signals: Mapping of signal name to `MeasurementSignal`.
         source: The path to the originating measurement file.
     """
+
     signals: dict[str, MeasurementSignal]
     source: Path
 

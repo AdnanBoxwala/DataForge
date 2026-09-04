@@ -4,7 +4,9 @@ from dataforge.validation.base import register_check
 
 
 @register_check("range")
-def range_check(channel: str, signals: SignalSet, min_value: float, max_value: float) -> CheckResult:
+def range_check(
+    channel: str, signals: SignalSet, min_value: float, max_value: float
+) -> CheckResult:
     """Check if the values of a signal are within a specified range.
 
     Args:
@@ -17,7 +19,7 @@ def range_check(channel: str, signals: SignalSet, min_value: float, max_value: f
         A `CheckResult` indicating whether all values are within the range.
     """
     signal = signals.get(channel)
-    
+
     passed = True
     message = f"Signal '{channel}' is within the specified range."
     for index, value in enumerate(signal.samples):
@@ -35,4 +37,5 @@ def range_check(channel: str, signals: SignalSet, min_value: float, max_value: f
         signal_name=channel,
         parameters={"min_value": min_value, "max_value": max_value},
         passed=passed,
-        message=message)
+        message=message,
+    )

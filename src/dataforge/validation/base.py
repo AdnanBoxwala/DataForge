@@ -17,9 +17,11 @@ def register_check(name: str) -> Callable[[CheckFunc], CheckFunc]:
     Returns:
         A decorator that registers the check function.
     """
+
     def decorator(func: CheckFunc) -> CheckFunc:
         _CHECK_REGISTRY[name] = func
         return func
+
     return decorator
 
 
