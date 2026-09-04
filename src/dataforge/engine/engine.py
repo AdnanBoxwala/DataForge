@@ -3,11 +3,10 @@ from pathlib import Path
 
 from dataforge.enums.result import Result
 from dataforge.ingestion import get_ingestor_for
+from dataforge.reporting import JSONReporter
 from dataforge.structs.result import AnalysisResult
 from dataforge.structs.signal import SignalSet
-from dataforge.validation import get_check
-from dataforge.validation import load_rules_from_yaml
-from dataforge.reporting import JSONReporter
+from dataforge.validation import get_check, load_rules_from_yaml
 
 logger = logging.getLogger(__name__)
 

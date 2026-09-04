@@ -30,7 +30,6 @@ class Ingestor(ABC):
             FileNotFoundError: If `path` does not exist.
             ValueError: If the file cannot be read or is in an unsupported format.
         """
-        pass
 
 
 def register_ingestor(ingestor_class: type[Ingestor]) -> type[Ingestor]:

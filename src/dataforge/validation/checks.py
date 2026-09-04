@@ -1,5 +1,5 @@
-from dataforge.structs.signal import SignalSet
 from dataforge.structs.result import CheckResult
+from dataforge.structs.signal import SignalSet
 from dataforge.validation.base import register_check
 
 

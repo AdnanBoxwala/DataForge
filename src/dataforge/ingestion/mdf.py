@@ -1,6 +1,7 @@
-from asammdf import MDF
 import logging
 from pathlib import Path
+
+from asammdf import MDF
 
 from dataforge.ingestion.base import Ingestor, register_ingestor
 from dataforge.structs.signal import MeasurementSignal, SignalSet

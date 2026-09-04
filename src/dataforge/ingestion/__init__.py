@@ -1,2 +1,3 @@
 from dataforge.ingestion.base import get_ingestor_for
-from dataforge.ingestion.mdf import MDFIngestor
+
+__all__ = ["get_ingestor_for"]

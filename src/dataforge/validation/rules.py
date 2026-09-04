@@ -1,8 +1,7 @@
 import logging
 from pathlib import Path
-import yaml
 
-from dataforge.validation.base import CheckFunc, get_check
+import yaml
 
 logger = logging.getLogger(__name__)
 

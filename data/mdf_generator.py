@@ -1,5 +1,6 @@
-from asammdf import MDF, Signal
 from pathlib import Path
+
+from asammdf import MDF, Signal
 
 
 def generate_sample_mdf(dest_path: Path, timestamps: list[float], channels: list[dict]) -> None:

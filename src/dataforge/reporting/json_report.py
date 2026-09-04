@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from dataforge.reporting.base import Reporter
@@ -18,7 +18,7 @@ class JSONReporter(Reporter):
             result: The `AnalysisResult` to be reported.
         """
         source_name = Path(result.source_file).stem
-        run_name = f"{source_name}_{datetime.now():%Y%m%d_%H%M%S}"
+        run_name = f"{source_name}_{datetime.now(tz=UTC):%Y%m%d_%H%M%SZ}"
         run_dir = Path("output") / run_name
         run_dir.mkdir(parents=True, exist_ok=True)
         report_path = run_dir / "summary.json"

@@ -17,4 +17,3 @@ class Reporter(ABC):
         Returns:
             The path to the generated report file.
         """
-        pass

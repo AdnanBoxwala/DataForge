@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from numpy.typing import NDArray
 from pathlib import Path
-from typing import Optional
+
+from numpy.typing import NDArray
 
 
 @dataclass
@@ -17,7 +17,7 @@ class MeasurementSignal:
     name: str
     samples: NDArray
     timestamps: NDArray
-    unit: Optional[str]
+    unit: str | None
 
 
 @dataclass
