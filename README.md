@@ -36,15 +36,37 @@ This creates a `.venv` and installs everything pinned in `uv.lock`, using the Py
 ## Usage
 
 ```bash
-uv run dataforge <measurement_file.mf4> <rules.yaml>
+uv run dataforge --measurement-file <measurement_file> --rules <rules.yaml>
 ```
 
 Example, using the sample fixture and rules bundled in the repo:
 ```bash
-uv run dataforge data/sample/sample_speed.mf4 data/rules.yaml
+uv run dataforge \
+  --measurement-file data/sample/sample_speed.mf4 \
+  --rules data/rules.yaml
 ```
 
-This ingests the `.mf4` file, runs each check defined in the rules YAML against the matching channel, and writes a JSON report. The path to the generated report is printed on completion.
+The `--measurement-file` argument accepts a path to a measurement file. DataForge selects an ingestor based on the file extension; currently, only the MDF `.mf4` ingestor is registered. Additional ingestors can be added without changing the CLI.
+
+The tool runs each check defined in the rules YAML against the matching channel and writes a JSON report. The path to the generated report is printed on completion.
+
+Use `--verbose` or `-v` to enable DEBUG-level logging:
+
+```bash
+uv run dataforge \
+  --measurement-file data/sample/sample_speed.mf4 \
+  --rules data/rules.yaml \
+  --verbose
+```
+
+Use `--log-file` to additionally write log output to a file:
+
+```bash
+uv run dataforge \
+  --measurement-file data/sample/sample_speed.mf4 \
+  --rules data/rules.yaml \
+  --log-file output/dataforge.log
+```
 
 ### Rules format
 
