@@ -17,8 +17,7 @@ def load_rules_from_yaml(path: Path) -> list[dict]:
 
     Raises:
         FileNotFoundError: If `path` does not exist.
-        ValueError: If the YAML is malformed, or references an unregistered
-            check type.
+        ValueError: If the YAML is malformed.
     """
     if not path.exists():
         raise FileNotFoundError(f"The rules YAML file '{path}' does not exist.")
