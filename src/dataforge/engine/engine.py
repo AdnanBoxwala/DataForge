@@ -37,17 +37,17 @@ def run(measurement_file: Path, rules_yaml: Path) -> Result:
     for rule in rules:
         check_fn = get_check(rule["type"])
         logger.debug(f"Running check '{rule["type"]}' on channel '{rule["channel"]}'.")
-        result = check_fn(
+        check_result = check_fn(
             channel=rule["channel"],
             signals=signals,
             **rule["parameters"],
         )
         logger.debug(
-            f"Check '{rule["type"]}' on channel '{rule["channel"]}': {"PASSED" if result.passed else "FAILED"} - {result.message}"
+            f"Check '{rule["type"]}' on channel '{rule["channel"]}': {"PASSED" if check_result.passed else "FAILED"} - {check_result.message}"
         )
-        check_results.append(result)
+        check_results.append(check_result)
 
-    result = AnalysisResult(
+    analysis_result = AnalysisResult(
                 source_file=measurement_file,
                 check_results=check_results,
                 rules_yaml=rules_yaml
@@ -55,7 +55,7 @@ def run(measurement_file: Path, rules_yaml: Path) -> Result:
 
     # REPORTING
     reporter = JSONReporter()
-    reporter.generate(result)
+    reporter.generate(analysis_result)
 
     failed = [check for check in check_results if not check.passed]
     if failed:

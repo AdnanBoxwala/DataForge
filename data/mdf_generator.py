@@ -10,7 +10,6 @@ def generate_sample_mdf(dest_path: Path, timestamps: list[float], channels: list
         timestamps: A list of timestamps for the signals.
         channels: A list of dictionaries, each containing 'samples', 'name', and 'unit' for a signal.
     """
-    timestamps = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     signals = []
 
     for channel in channels:

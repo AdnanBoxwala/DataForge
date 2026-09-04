@@ -51,8 +51,7 @@ class MDFIngestor(Ingestor):
                     samples=samples,
                     timestamps=timestamps,
                     name=name,
-                    unit=unit,
-                    source_file=str(path),
+                    unit=unit
                 )
                 signals[name] = signal
                 logger.debug(f"Ingested channel '{name}' ({len(samples)} samples, unit={unit}).")
