@@ -46,7 +46,7 @@ uv run dataforge \
   --rules examples/demo_rules.yaml
 ```
 
-That demo passes every check and exits `0`. 
+That demo passes every check and exits `0`.
 
 The `--measurement-file` argument accepts a path to a measurement file. DataForge selects an ingestor based on the file extension; currently, only the MDF `.mf4` ingestor is registered. Additional ingestors can be added without changing the CLI.
 

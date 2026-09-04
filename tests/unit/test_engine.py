@@ -69,7 +69,9 @@ def test_missing_input_files_raise(
 ):
     monkeypatch.chdir(tmp_path)
     measurement = (
-        tmp_path / "absent.mf4" if missing == "measurement" else make_mdf({"speed": [10.0]})
+        tmp_path / "absent.mf4"
+        if missing == "measurement"
+        else make_mdf({"speed": [10.0]})
     )
     rules = (
         tmp_path / "absent.yaml"

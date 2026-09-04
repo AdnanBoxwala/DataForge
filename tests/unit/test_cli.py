@@ -17,7 +17,9 @@ def _run_cli(monkeypatch, *args: str) -> int:
 
 
 @pytest.fixture
-def cli(tmp_path, monkeypatch, restore_root_logger, make_mdf, make_rules_yaml, range_rule):
+def cli(
+    tmp_path, monkeypatch, restore_root_logger, make_mdf, make_rules_yaml, range_rule
+):
     """Return a runner that sets up inputs in an isolated cwd and invokes the CLI."""
 
     def _run(*extra_args: str, samples=PASSING_SAMPLES, measurement=None) -> int:
@@ -74,8 +76,14 @@ def test_unexpected_errors_are_logged_with_a_traceback(cli, monkeypatch, capsys)
     ],
 )
 def test_both_option_spellings_are_accepted(
-    tmp_path, monkeypatch, restore_root_logger, make_mdf, make_rules_yaml, range_rule,
-    file_flag, rules_flag,
+    tmp_path,
+    monkeypatch,
+    restore_root_logger,
+    make_mdf,
+    make_rules_yaml,
+    range_rule,
+    file_flag,
+    rules_flag,
 ):
     monkeypatch.chdir(tmp_path)
     measurement = make_mdf({"speed": PASSING_SAMPLES})

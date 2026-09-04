@@ -1,0 +1,41 @@
+# Install the git hook once with:  uv run pre-commit install
+#
+# ruff and mypy run as local hooks through `uv run`, so they use the exact
+# versions pinned in uv.lock. Mirror repos would pin their own versions here,
+# which then drift from the ones the Makefile and CI use.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=512]
+
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: ruff-format
+        name: ruff format
+        entry: uv run ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+
+      - id: mypy
+        name: mypy
+        entry: uv run mypy src/dataforge
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+        require_serial: true

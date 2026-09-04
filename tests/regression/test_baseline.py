@@ -64,6 +64,7 @@ def pipeline_output(tmp_path) -> tuple[subprocess.CompletedProcess, dict]:
         capture_output=True,
         text=True,
         timeout=120,
+        check=False,  # the exit code is what we assert on
     )
 
     reports = list(tmp_path.glob("output/*/summary.json"))
@@ -118,8 +119,12 @@ def test_each_check_matches_the_baseline(pipeline_output, baseline, signal_name)
     _, actual = pipeline_output
 
     def _by_name(payload: dict) -> dict:
-        matches = [c for c in payload["check_results"] if c["signal_name"] == signal_name]
-        assert len(matches) == 1, f"expected one result for {signal_name}, got {matches}"
+        matches = [
+            c for c in payload["check_results"] if c["signal_name"] == signal_name
+        ]
+        assert len(matches) == 1, (
+            f"expected one result for {signal_name}, got {matches}"
+        )
         return matches[0]
 
     assert _by_name(actual) == _by_name(baseline)
@@ -145,7 +150,9 @@ def test_the_failure_message_pinpoints_the_spike(pipeline_output):
     _, actual = pipeline_output
 
     message = next(
-        c["message"] for c in actual["check_results"] if c["signal_name"] == "engine_rpm"
+        c["message"]
+        for c in actual["check_results"]
+        if c["signal_name"] == "engine_rpm"
     )
 
     assert "9500.0" in message

@@ -20,7 +20,9 @@ from dataforge.validation.checks import range_check
         pytest.param([], 0, 100, True, id="no-samples-passes-vacuously"),
         # NaN fails every comparison, so it reads as out-of-range rather than
         # as a distinct "invalid sample" condition.
-        pytest.param([10.0, float("nan"), 30.0], 0, 100, False, id="nan-reads-as-out-of-range"),
+        pytest.param(
+            [10.0, float("nan"), 30.0], 0, 100, False, id="nan-reads-as-out-of-range"
+        ),
     ],
 )
 def test_range_check_outcome(make_signal_set, samples, min_value, max_value, expected):
@@ -41,7 +43,9 @@ def test_range_check_outcome(make_signal_set, samples, min_value, max_value, exp
     ],
 )
 def test_failure_message_is_actionable(make_signal_set, expected_fragment):
-    signals = make_signal_set({"speed": [10.0, 150.0, 30.0]}, timestamps=[0.0, 0.5, 1.0])
+    signals = make_signal_set(
+        {"speed": [10.0, 150.0, 30.0]}, timestamps=[0.0, 0.5, 1.0]
+    )
 
     result = range_check("speed", signals, min_value=0, max_value=100)
 
@@ -49,7 +53,9 @@ def test_failure_message_is_actionable(make_signal_set, expected_fragment):
 
 
 def test_reports_the_first_offending_sample(make_signal_set):
-    signals = make_signal_set({"speed": [10.0, 150.0, 200.0]}, timestamps=[0.0, 1.0, 2.0])
+    signals = make_signal_set(
+        {"speed": [10.0, 150.0, 200.0]}, timestamps=[0.0, 1.0, 2.0]
+    )
 
     result = range_check("speed", signals, min_value=0, max_value=100)
 
@@ -70,9 +76,7 @@ def test_passing_message_names_the_channel(make_signal_set):
     [
         pytest.param("check_name", "range", id="check-name"),
         pytest.param("signal_name", "speed", id="signal-name"),
-        pytest.param(
-            "parameters", {"min_value": 0, "max_value": 100}, id="parameters"
-        ),
+        pytest.param("parameters", {"min_value": 0, "max_value": 100}, id="parameters"),
     ],
 )
 def test_result_carries_check_metadata(make_signal_set, attribute, expected):

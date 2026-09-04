@@ -112,5 +112,5 @@ def test_unreadable_file_raises(tmp_path: Path, content: bytes):
     path = tmp_path / "corrupt.mf4"
     path.write_bytes(content)
 
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         MDFIngestor().load(path)

@@ -34,33 +34,28 @@ DEMO_RULES = HERE / "demo_rules.yaml"
 # so the values round-trip through the .mf4 exactly.
 TIMESTAMPS = [i * 0.5 for i in range(20)]
 
+# fmt: off
 CHANNELS: dict[str, tuple[list[float], str]] = {
     # Accelerate, cruise, decelerate to a stop.
     "speed": (
-        [
-            0.0, 5.0, 12.0, 20.0, 28.0, 35.0, 42.0, 48.0, 52.0, 55.0,
-            55.0, 55.0, 54.0, 50.0, 44.0, 36.0, 27.0, 18.0, 9.0, 0.0,
-        ],
+        [0.0, 5.0, 12.0, 20.0, 28.0, 35.0, 42.0, 48.0, 52.0, 55.0,
+         55.0, 55.0, 54.0, 50.0, 44.0, 36.0, 27.0, 18.0, 9.0, 0.0],
         "km/h",
     ),
     # Engine speed tracking the same profile, settling back to idle.
     "engine_rpm": (
-        [
-            800.0, 1200.0, 1600.0, 2000.0, 2200.0, 2400.0, 2500.0, 2400.0,
-            2300.0, 2200.0, 2100.0, 2100.0, 2000.0, 1900.0, 1700.0, 1500.0,
-            1300.0, 1100.0, 900.0, 800.0,
-        ],
+        [800.0, 1200.0, 1600.0, 2000.0, 2200.0, 2400.0, 2500.0, 2400.0, 2300.0, 2200.0,
+         2100.0, 2100.0, 2000.0, 1900.0, 1700.0, 1500.0, 1300.0, 1100.0, 900.0, 800.0],
         "rpm",
     ),
     # Coolant warming up from ambient towards its operating temperature.
     "coolant_temp": (
-        [
-            20.0, 22.0, 25.0, 28.0, 32.0, 36.0, 40.0, 45.0, 50.0, 55.0,
-            60.0, 65.0, 70.0, 74.0, 78.0, 81.0, 84.0, 86.0, 88.0, 89.0,
-        ],
+        [20.0, 22.0, 25.0, 28.0, 32.0, 36.0, 40.0, 45.0, 50.0, 55.0,
+         60.0, 65.0, 70.0, 74.0, 78.0, 81.0, 84.0, 86.0, 88.0, 89.0],
         "degC",
     ),
 }
+# fmt: on
 
 #: Limits chosen so every channel passes - this is the happy-path demo.
 RULES: list[dict] = [

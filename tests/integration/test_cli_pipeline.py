@@ -40,6 +40,7 @@ def run_cli(dataforge_executable, tmp_path):
             capture_output=True,
             text=True,
             timeout=120,
+            check=False,  # the exit code is what we assert on
         )
 
     return _run
@@ -352,4 +353,6 @@ def test_repository_fixture_and_rules_still_work(run_cli, tmp_path):
     assert process.returncode == 1
     assert set(payload) == REPORT_KEYS
     assert payload["passed"] is False
-    assert len(payload["check_results"]) == len(yaml.safe_load(rules.read_text())["checks"])
+    assert len(payload["check_results"]) == len(
+        yaml.safe_load(rules.read_text())["checks"]
+    )

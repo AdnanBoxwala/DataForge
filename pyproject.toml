@@ -20,6 +20,14 @@ dataforge = "dataforge.cli:main"
 requires = ["uv_build>=0.12.5,<0.13.0"]
 build-backend = "uv_build"
 
+[tool.ruff]
+# Pinned so lint and format results are identical locally, in pre-commit, and
+# in CI.
+target-version = "py313"
+
+[tool.mypy]
+python_version = "3.13"
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = [

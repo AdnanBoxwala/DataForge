@@ -124,7 +124,9 @@ def make_rules_yaml(tmp_path: Path) -> Callable[..., Path]:
 def range_rule() -> Callable[..., dict]:
     """Return a factory for a single `range` rule entry."""
 
-    def _make(channel: str = "speed", min_value: float = 0, max_value: float = 100) -> dict:
+    def _make(
+        channel: str = "speed", min_value: float = 0, max_value: float = 100
+    ) -> dict:
         return {
             "type": "range",
             "channel": channel,

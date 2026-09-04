@@ -96,7 +96,9 @@ def test_payload_includes_each_check_result(written_payload):
     ]
 
 
-def test_creates_the_output_directory_when_absent(tmp_path, monkeypatch, analysis_result):
+def test_creates_the_output_directory_when_absent(
+    tmp_path, monkeypatch, analysis_result
+):
     monkeypatch.chdir(tmp_path)
     assert not (tmp_path / "output").exists()
 

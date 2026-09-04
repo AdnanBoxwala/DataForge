@@ -49,6 +49,7 @@ def run_pipeline(measurement: Path, rules: Path, workdir: Path) -> dict:
         capture_output=True,
         text=True,
         timeout=120,
+        check=False,  # the exit code is what we assert on
     )
     print(process.stderr, end="", file=sys.stderr)
 
