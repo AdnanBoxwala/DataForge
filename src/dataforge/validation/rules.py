@@ -7,10 +7,10 @@ logger = logging.getLogger(__name__)
 
 
 def load_rules_from_yaml(path: Path) -> list[dict]:
-    """Load and parse a rules.yaml file into a list.
+    """Load and parse a rules YAML file into a list.
 
     Args:
-        path: Path to the rules.yaml file.
+        path: Path to the rules YAML file.
 
     Returns:
         A list of dictionaries representing the parsed rules.

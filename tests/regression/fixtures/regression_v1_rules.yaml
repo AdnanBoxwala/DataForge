@@ -1,0 +1,21 @@
+checks:
+- type: range
+  channel: speed
+  parameters:
+    min_value: 0
+    max_value: 232
+- type: range
+  channel: engine_rpm
+  parameters:
+    min_value: 0
+    max_value: 8000
+- type: range
+  channel: coolant_temp
+  parameters:
+    min_value: -40
+    max_value: 120
+- type: range
+  channel: wheel_speed
+  parameters:
+    min_value: 0
+    max_value: 232

@@ -24,6 +24,7 @@ build-backend = "uv_build"
 testpaths = ["tests"]
 markers = [
     "integration: drives the installed console script in a subprocess (slower)",
+    "regression: asserts pipeline output against a committed baseline",
 ]
 
 [dependency-groups]

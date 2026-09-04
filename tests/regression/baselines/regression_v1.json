@@ -1,0 +1,47 @@
+{
+    "source_file": "regression_v1.mf4",
+    "rules_yaml": "regression_v1_rules.yaml",
+    "passed": false,
+    "check_results": [
+        {
+            "check_name": "range",
+            "signal_name": "speed",
+            "parameters": {
+                "min_value": 0,
+                "max_value": 232
+            },
+            "passed": true,
+            "message": "Signal 'speed' is within the specified range."
+        },
+        {
+            "check_name": "range",
+            "signal_name": "engine_rpm",
+            "parameters": {
+                "min_value": 0,
+                "max_value": 8000
+            },
+            "passed": false,
+            "message": "Signal 'engine_rpm' has value 9500.0 at timestamp 2.0, which is outside the specified range."
+        },
+        {
+            "check_name": "range",
+            "signal_name": "coolant_temp",
+            "parameters": {
+                "min_value": -40,
+                "max_value": 120
+            },
+            "passed": true,
+            "message": "Signal 'coolant_temp' is within the specified range."
+        },
+        {
+            "check_name": "range",
+            "signal_name": "wheel_speed",
+            "parameters": {
+                "min_value": 0,
+                "max_value": 232
+            },
+            "passed": true,
+            "message": "Signal 'wheel_speed' is within the specified range."
+        }
+    ]
+}

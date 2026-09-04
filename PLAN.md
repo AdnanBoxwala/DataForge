@@ -17,9 +17,10 @@ This project is the applied side of a 9-day self-directed DevOps training plan. 
 
 - Input: `.mf4` files via the `asammdf` library.
 - `asammdf` has its own class called `Signal` — the internal data class in this project uses a different name (e.g. `MeasurementSignal` or `ChannelData`) to avoid import/naming collisions.
+- DataForge has no data directory of its own. The CLI takes `--measurement-file` and `--rules` paths and reads whatever it is given; nothing in the tool assumes a location. Files committed to this repo are therefore either test fixtures or deployment inputs, never "the app's data".
 - Two categories of `.mf4` files exist in this repo, and they must not be conflated:
-  1. **Regression fixtures** (`data/sample/`) — small, synthetic, generated with known fault injections. CI tests assert specific expected outcomes against these. These are what `pytest` uses.
-  2. **Production-like scenario file(s)** (`data/production-like/`) — larger, synthetic, more realistic, deliberately *not* asserted against in any test. This is the file the AWS deployment actually processes. Its purpose is to demonstrate the tool being *used* on unseen data, not to re-prove correctness CI already proved. Never point the AWS/ECS run at a regression fixture — that would make the cloud deployment redundant with CI.
+  1. **Regression fixtures** (`tests/regression/fixtures/`) — small, synthetic, generated with known fault injections. CI tests assert specific expected outcomes against these. These are what `pytest` uses, so they live with the test suite that owns them, alongside the committed baselines they are compared against.
+  2. **Production-like scenario file(s)** (`data/production-like/`) — larger, synthetic, more realistic, deliberately *not* asserted against in any test. This is the file the AWS deployment actually processes, which is why it is the one category that lives outside `tests/`. Its purpose is to demonstrate the tool being *used* on unseen data, not to re-prove correctness CI already proved. Never point the AWS/ECS run at a regression fixture — that would make the cloud deployment redundant with CI.
 - A synthetic data generator (with deliberate fault injection: out-of-range spikes, dropped samples, stale/frozen stretches) produces both categories of files. Real downloaded MDF samples (e.g. from CSS Electronics) are an optional future enhancement, not part of the current scope — they require DBC decoding (`cantools`) which isn't in scope yet.
 
 ## Architecture
@@ -35,10 +36,11 @@ dataforge/
 │   └── main.py
 ├── tests/
 │   ├── unit/
-│   ├── integration/
-│   └── regression/      # asserts against data/sample/ fixtures with known baselines
+│   ├── integration/     # drives the installed console script in a subprocess
+│   └── regression/      # asserts fixture output against committed baselines
+│       ├── fixtures/    # small, frozen .mf4 + rules with known fault injections
+│       └── baselines/   # expected reports, updated only by deliberate review
 ├── data/
-│   ├── sample/               # small CI regression fixtures
 │   └── production-like/      # larger, unasserted "new data" file(s) — used by the AWS run
 ├── docs/                 # Sphinx source; published to GitHub Pages via CI
 ├── terraform/

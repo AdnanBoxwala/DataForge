@@ -12,6 +12,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 
 pytestmark = pytest.mark.integration
 
@@ -297,23 +298,58 @@ def test_verbose_adds_debug_output(
     assert "DEBUG" in verbose.stderr
 
 
+# --- the bundled files ------------------------------------------------------
+
+
+def test_bundled_examples_run_and_pass(run_cli, tmp_path):
+    """The demo shipped in `examples/` must work with no setup.
+
+    These are the only measurement files copied into the Docker image, so a
+    failure here means an image user has nothing runnable. Unlike the
+    regression fixture, the demo is expected to pass - that is the whole point
+    of it as a first-run experience.
+    """
+    examples = Path(__file__).resolve().parents[2] / "examples"
+    measurement = examples / "demo.mf4"
+    rules = examples / "demo_rules.yaml"
+    if not measurement.exists() or not rules.exists():
+        pytest.skip("bundled example files are absent")
+
+    process = run_cli("-f", str(measurement), "-r", str(rules), cwd=tmp_path)
+    payload = read_report(tmp_path)
+
+    assert process.returncode == 0
+    assert payload["passed"] is True
+    assert set(payload) == REPORT_KEYS
+    assert [c["signal_name"] for c in payload["check_results"]] == [
+        "speed",
+        "engine_rpm",
+        "coolant_temp",
+    ]
+
+
 # --- the committed fixture --------------------------------------------------
 
 
 def test_repository_fixture_and_rules_still_work(run_cli, tmp_path):
     """Runs the exact command documented in the README against the committed
     fixture, writing output into a temp directory so the repo stays clean.
+
+    The fixture carries an injected out-of-range spike, so a *failing* run is
+    the documented behaviour. What this asserts is that the bundled files are
+    still wired up correctly and produce a well-formed report - the specific
+    check outcomes are the regression suite's job, not this test's.
     """
-    repo_root = Path(__file__).resolve().parents[2]
-    measurement = repo_root / "data" / "sample" / "sample_speed.mf4"
-    rules = repo_root / "data" / "rules.yaml"
+    fixtures = Path(__file__).resolve().parents[1] / "regression" / "fixtures"
+    measurement = fixtures / "regression_v1.mf4"
+    rules = fixtures / "regression_v1_rules.yaml"
     if not measurement.exists() or not rules.exists():
-        pytest.skip("committed sample fixture or rules file is absent")
+        pytest.skip("committed fixture or rules file is absent")
 
     process = run_cli("-f", str(measurement), "-r", str(rules), cwd=tmp_path)
     payload = read_report(tmp_path)
 
-    assert process.returncode == 0
+    assert process.returncode == 1
     assert set(payload) == REPORT_KEYS
-    assert payload["passed"] is True
-    assert payload["check_results"][0]["signal_name"] == "speed"
+    assert payload["passed"] is False
+    assert len(payload["check_results"]) == len(yaml.safe_load(rules.read_text())["checks"])

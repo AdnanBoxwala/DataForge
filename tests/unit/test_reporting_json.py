@@ -14,7 +14,7 @@ from dataforge.structs.result import AnalysisResult, CheckResult
 def analysis_result():
     def _make(passed: bool = True) -> AnalysisResult:
         return AnalysisResult(
-            source_file=Path("data/sample/sample_speed.mf4"),
+            source_file=Path("measurements/drive_cycle.mf4"),
             check_results=[
                 CheckResult(
                     check_name="range",
@@ -24,7 +24,7 @@ def analysis_result():
                     message="ok" if passed else "out of range",
                 )
             ],
-            rules_yaml=Path("data/rules.yaml"),
+            rules_yaml=Path("config/rules.yaml"),
         )
 
     return _make
@@ -53,14 +53,14 @@ def test_writes_a_summary_json(written_payload):
 def test_run_directory_is_named_after_the_source_file(written_payload):
     _, report_path = written_payload()
 
-    assert report_path.parent.name.startswith("sample_speed_")
+    assert report_path.parent.name.startswith("drive_cycle_")
 
 
 @pytest.mark.parametrize(
     ("key", "expected"),
     [
-        pytest.param("source_file", "data/sample/sample_speed.mf4", id="source-file"),
-        pytest.param("rules_yaml", "data/rules.yaml", id="rules-yaml"),
+        pytest.param("source_file", "measurements/drive_cycle.mf4", id="source-file"),
+        pytest.param("rules_yaml", "config/rules.yaml", id="rules-yaml"),
     ],
 )
 def test_payload_records_the_inputs(written_payload, key, expected):
