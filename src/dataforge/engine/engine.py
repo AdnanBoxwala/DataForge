@@ -13,18 +13,19 @@ logger = logging.getLogger(__name__)
 
 
 def run(measurement_file: Path, rules_yaml: Path) -> Result:
-    """Run configured checks against an ingested signal set.
+    """Run configured checks against a measurement file.
     
     Args:
         measurement_file: Path to the measurement file to be validated.
         rules_yaml: Path to the YAML file containing validation rules.
+    
+    Returns:
+        Result.PASS if all checks pass, Result.FAIL if any check fails.
     """
-    if not measurement_file.exists():
-        raise FileNotFoundError(f"The measurement file '{measurement_file}' does not exist.")
-    if not rules_yaml.exists():
-        raise FileNotFoundError(f"The rules YAML file '{rules_yaml}' does not exist.")
-
     logger.info(f"Starting analysis of '{measurement_file}' using rules '{rules_yaml}'.")
+
+    # VALIDATION RULES
+    rules = load_rules_from_yaml(rules_yaml)
 
     # INGESTION
     ingestor = get_ingestor_for(measurement_file)
@@ -32,7 +33,6 @@ def run(measurement_file: Path, rules_yaml: Path) -> Result:
     signals: SignalSet = ingestor.load(measurement_file)
 
     # VALIDATION
-    rules = load_rules_from_yaml(rules_yaml)
     check_results = []
     for rule in rules:
         check_fn = get_check(rule["type"])

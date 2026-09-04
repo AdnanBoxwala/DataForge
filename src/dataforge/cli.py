@@ -49,7 +49,9 @@ def main() -> Result:
         logger.exception("Unexpected error during analysis.")
         sys.exit(1)
 
-    return result
+    if result is Result.FAIL:
+        sys.exit(1)
+    sys.exit(0)
 
 
 

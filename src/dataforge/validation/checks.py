@@ -16,10 +16,7 @@ def range_check(channel: str, signals: SignalSet, min_value: float, max_value: f
     Returns:
         A `CheckResult` indicating whether all values are within the range.
     """
-    try:
-        signal = signals.get(channel)
-    except KeyError:
-        raise ValueError(f"Signal '{channel}' not found in the provided SignalSet.")
+    signal = signals.get(channel)
     
     passed = True
     message = f"Signal '{channel}' is within the specified range."

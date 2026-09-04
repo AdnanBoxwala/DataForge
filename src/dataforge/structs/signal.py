@@ -44,4 +44,7 @@ class SignalSet:
         Raises:
             KeyError: If the signal with the given name does not exist in the set.
         """
-        return self.signals[name]
+        try:
+            return self.signals[name]
+        except KeyError:
+            raise KeyError(f"Signal '{name}' not found in the provided SignalSet.")

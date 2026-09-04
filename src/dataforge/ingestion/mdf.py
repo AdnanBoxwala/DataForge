@@ -18,7 +18,7 @@ class MDFIngestor(Ingestor):
     file_extension = ".mf4"
 
     def load(self, path: Path) -> SignalSet:
-        """Open an MDF file and convert every channel into a `SignalSet`.
+        """Open an MDF file and extract all channels.
 
         Args:
             path: Path to the `.mf4` file.
@@ -28,7 +28,6 @@ class MDFIngestor(Ingestor):
 
         Raises:
             FileNotFoundError: If `path` does not exist.
-            ValueError: If the file is not a valid MDF file.
         """
         if not path.exists():
             raise FileNotFoundError(f"The file '{path}' does not exist.")
@@ -56,7 +55,7 @@ class MDFIngestor(Ingestor):
                     source_file=str(path),
                 )
                 signals[name] = signal
-                logger.debug(f"Ingested channel 'name' ({len(samples)} samples, unit={unit}).")
+                logger.debug(f"Ingested channel '{name}' ({len(samples)} samples, unit={unit}).")
 
             logger.info(f"Loaded {len(signals)} channel(s) from '{path}'.")
             return SignalSet(signals=signals, source=path)
