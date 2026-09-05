@@ -1,7 +1,7 @@
 [project]
 name = "dataforge"
 version = "0.1.0"
-description = "Add your description here"
+description = "A CLI tool that ingests vehicle measurement data, validates it against configurable rules, and produces a pass/fail report."
 readme = "README.md"
 authors = [
     { name = "AdnanBoxwala", email = "143093290+AdnanBoxwala@users.noreply.github.com" }

@@ -92,6 +92,39 @@ checks:
 
 Each entry names a registered check `type`, the `channel` to apply it to, and the `parameters` that check accepts.
 
+## Running in Docker
+
+```bash
+docker build -t dataforge .
+```
+
+The image contains the application only — no measurement data — so mount the files you want to analyse. Mounting the project root at `/work` is the simplest arrangement, because `/work` is the container's working directory: inputs are read from the mount and the report is written back into it.
+
+```bash
+docker run --rm -v ".:/work" dataforge \
+  -f /work/examples/demo.mf4 \
+  -r /work/examples/demo_rules.yaml
+```
+
+The report appears in `./output/` on the host, and the exit code is the same as the CLI's.
+
+To keep inputs read-only and separate the writable area:
+
+```bash
+docker run --rm \
+  -v "./examples:/data:ro" \
+  -v "./output:/work/output" \
+  dataforge -f /data/demo.mf4 -r /data/demo_rules.yaml
+```
+
+Notes:
+
+- **Paths in arguments are container paths** (`/work/...`), not host paths.
+- Arguments after the image name are passed straight to `dataforge`, since the image sets `ENTRYPOINT ["dataforge"]`. With no arguments it prints usage.
+- Anything not mounted is **not** visible to the container, and anything written outside a mount is lost when the container exits.
+- The container runs as a non-root user (uid 1000).
+- To inspect the image: `docker run --rm -it --entrypoint sh dataforge`.
+
 ## Project structure
 
 ```
@@ -104,18 +137,45 @@ src/dataforge/
 ├── enums/           # shared enumerations (Result, ...)
 ├── logging.py       # logging configuration
 └── cli.py           # CLI entry point
-examples/            # small demo measurement + rules, shipped in the image
+examples/            # small demo measurement + rules, and the script that makes them
 tests/
 ├── unit/            # fast, isolated
 ├── integration/     # drives the installed console script
 └── regression/      # asserts pipeline output against a committed baseline
     ├── fixtures/    # small, frozen .mf4 + rules with injected faults
     └── baselines/   # expected reports
+Dockerfile           # multi-stage build, runs as a non-root user
+Makefile             # developer shortcuts; CI calls the same targets
 ```
 
 See [`PLAN.md`](PLAN.md) for full architecture and project context.
 
 ## Development
+
+### Shortcuts
+
+`make` wraps the common tasks. CI invokes the same targets, so the command list lives in one place:
+
+```bash
+make            # list every target
+make check      # lint + format-check + typecheck + test — everything CI runs
+make test-unit  # fast inner loop
+make format     # reformat in place
+```
+
+`make format` rewrites files; `make format-check` only reports, which is why `check` uses the latter — a formatter that rewrites inside CI would pass every time and gate nothing.
+
+### Pre-commit hooks
+
+`ruff` and `mypy` run automatically on staged files before each commit. Enable them once per clone:
+
+```bash
+uv run pre-commit install
+```
+
+They run through `uv`, so they use the versions pinned in `uv.lock` rather than separately pinned copies. When a hook reformats a file it aborts the commit and leaves the change unstaged — `git add -u` and commit again. Run them over the whole repo with `uv run pre-commit run --all-files`.
+
+### Dependencies
 
 Add a new dependency:
 ```bash
@@ -126,6 +186,8 @@ Add a dev-only dependency (e.g. test/lint tools):
 ```bash
 uv add --dev <package-name>
 ```
+
+Only `[project].dependencies` reach the Docker image — the build runs `uv sync --no-dev`, so the `dev` group stays out of it.
 
 ### Tests
 
