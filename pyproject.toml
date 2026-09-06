@@ -38,10 +38,14 @@ markers = [
 [dependency-groups]
 dev = [
     "awscliv2>=2.3.1",
+    "furo>=2025.12.19",
     "k9s>=1.0.56",
     "mypy>=2.3.1",
+    "myst-parser>=5.1.0",
     "pre-commit>=4.6.2",
     "pytest>=9.1.1",
     "ruff>=0.16.6",
+    "sphinx>=9.1.0",
+    "sphinx-autodoc-typehints>=3.13.5",
     "types-pyyaml>=6.0.12.20260815",
 ]

@@ -34,7 +34,8 @@ class Ingestor(ABC):
 def register_ingestor(ingestor_class: type[Ingestor]) -> type[Ingestor]:
     """Class decorator that registers an `Ingestor` subclass by its `file extension`.
 
-    Usage:
+    Usage::
+
         @register_ingestor
         class MyIngestor(Ingestor):
             file_extension = ".myext"
