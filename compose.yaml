@@ -1,0 +1,56 @@
+# Usage:
+#
+#   docker compose build
+#   docker compose run --rm dataforge -f /work/examples/demo.mf4 \
+#                                     -r /work/examples/demo_rules.yaml
+#
+# Use `run`, not `up`. `run` forwards the arguments after the service name to the
+# image's entrypoint and propagates the container's exit code, so a failed
+# validation fails the calling shell or CI step. `up` neither takes arguments nor
+# returns the exit code without --exit-code-from.
+
+services:
+  dataforge:
+    build:
+      context: .
+    image: dataforge:local
+
+    # The project root is mounted at /work, which is the image's working
+    # directory. Inputs are read from it and the report is written back into it,
+    # so results land in ./output on the host instead of dying with the container.
+    volumes:
+      - .:/work
+
+    # A health check is a liveness probe for long-running services: Docker
+    # re-runs it on an interval against a container that stays up, and other
+    # services can wait on it via `depends_on: condition: service_healthy`.
+    #
+    # This container is a batch job that exits within a couple of seconds, so on
+    # a normal `compose run` the first check has not fired by the time the
+    # process is gone. It is kept here as a smoke test - `dataforge --help`
+    # exercises the entrypoint, the venv's interpreter, and the full import
+    # chain including numpy and asammdf, so a broken image fails it - and it
+    # becomes meaningful only if the container is kept alive.
+    #
+    # It will start earning its keep when this file grows long-running services
+    # (Grafana and Prometheus are planned), which genuinely need readiness
+    # gating before dependents start.
+    healthcheck:
+      test: ["CMD", "dataforge", "--help"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Verifies the built image actually works, without needing any measurement
+  # data: it runs the same command the health check uses, once, and exits.
+  #
+  #   docker compose run --rm smoke
+  #
+  # Under `profiles` so it never starts as part of a plain `compose up`.
+  smoke:
+    profiles: ["ci"]
+    build:
+      context: .
+    image: dataforge:local
+    command: ["--help"]
