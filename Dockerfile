@@ -1,3 +1,4 @@
+# STAGE 1:
 FROM python:3.13.15-slim AS build
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential pkg-config && rm -rf /var/lib/apt/lists/*
@@ -34,6 +35,8 @@ RUN --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     --mount=type=bind,source=README.md,target=README.md \
     uv sync --no-dev --frozen --no-editable
 
+# STAGE 2:
+# Using clean base reduces image size from 683 MB to 340 MB
 FROM python:3.13.15-slim
 
 # Create an unprivileged user to run as, so files written into
