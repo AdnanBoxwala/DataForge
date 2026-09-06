@@ -1,4 +1,4 @@
-name: lint and format
+name: typecheck, linting and formatting
 on:
   push
 jobs:
@@ -18,4 +18,4 @@ jobs:
         run: uv sync --locked
 
       - name: Type-check
-        run: uv run mypy src/dataforge
+        run: uv run ruff check src/dataforge
