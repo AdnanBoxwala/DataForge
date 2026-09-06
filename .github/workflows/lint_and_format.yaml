@@ -5,7 +5,7 @@ jobs:
   type-check:
     strategy:
       matrix:
-        os: [ubuntu-latst, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
 
     steps:
