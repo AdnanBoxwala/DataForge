@@ -1,0 +1,21 @@
+name: lint and format
+on:
+  push
+jobs:
+  type-check:
+    strategy:
+      matrix:
+        os: [ubuntu-latst, windows-latest, macos-latest]
+    runs-on: ${{matrix.os}}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Type-check
+        run: uv run mypy src/dataforge
