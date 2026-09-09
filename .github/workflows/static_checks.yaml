@@ -2,6 +2,7 @@ name: Typecheck, Lint and Formatter
 
 on:
   push:
+    branches-ignore: ['main']
   workflow_call:
   pull_request:
     types: [opened, reopened, synchronize]
