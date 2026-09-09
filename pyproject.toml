@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "AdnanBoxwala", email = "143093290+AdnanBoxwala@users.noreply.github.com" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "asammdf>=8.8.25",
     "numpy>=2.5.2",
