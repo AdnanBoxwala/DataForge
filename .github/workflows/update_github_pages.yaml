@@ -1,7 +1,7 @@
-name: Build and upload sphinx docs
+name: Build and Upload sphinx docs
 
 on:
-  push
+  page_build
 
 jobs:
   build:
