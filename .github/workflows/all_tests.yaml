@@ -3,6 +3,10 @@ name: Unit, Integration, and Regression tests
 on:
   push:
   workflow_call:
+  pull_request:
+    types: [opened, reopened, edited]
+    branch:
+      - main
 
 jobs:
   tests:
