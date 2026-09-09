@@ -1,11 +1,11 @@
 name: typecheck, linting and formatting
 
 on:
-  push
+  push:
+  workflow-call:
 
 jobs:
-  linting:
-    continue-on-error: true
+  static-checks:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
@@ -22,5 +22,13 @@ jobs:
         run: uv sync --locked
 
       - name: Type-check
-        run: uv run ruff check src/dataforge
+        run: make typecheck
+
+      - name: Lint
+        run: make lint
+      
+      - name: Foramt
+        run: make format-check
+
+
       
