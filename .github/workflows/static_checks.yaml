@@ -2,7 +2,7 @@ name: typecheck, linting and formatting
 
 on:
   push:
-  workflow-call:
+  workflow_call:
 
 jobs:
   static-checks:
