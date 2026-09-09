@@ -1,0 +1,56 @@
+name: Unit, Integration, and Regression tests
+
+on:
+  push:
+  workflow_call:
+  pull_request:
+    types: [opened, reopened, synchronize]
+    branch:
+      - main
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Unit tests
+        id: unit-tests
+        run: make test-unit
+
+      - name: Integration tests
+        id: integration-tests
+        run: make test-integration
+      
+      - name: Regression tests
+        id: regression-tests
+        run: make test-regression
+
+#      - name: Fail if any test failed
+#        if: ${{ always() }}
+#        shell: bash
+#        run: |
+#          if [[ "${{ steps.unit-tests.outcome }}" != "success" ||
+#                "${{ steps.integration-tests.outcome }}" != "success" ||
+#                "${{ steps.regression-tests.outcome }}" != "success" ]]; then
+#            echo "::error::One or more test suites failed"
+#            exit 1
+#          fi

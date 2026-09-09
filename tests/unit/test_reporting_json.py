@@ -66,7 +66,7 @@ def test_run_directory_is_named_after_the_source_file(written_payload):
 def test_payload_records_the_inputs(written_payload, key, expected):
     payload, _ = written_payload()
 
-    assert payload[key] == expected
+    assert Path(payload[key]) == Path(expected)
 
 
 @pytest.mark.parametrize(
