@@ -2,7 +2,6 @@ import argparse
 import logging
 import sys
 from pathlib import Path
-import os
 
 from dataforge.engine import run
 from dataforge.enums.result import Result
