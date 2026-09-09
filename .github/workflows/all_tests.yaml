@@ -1,4 +1,4 @@
-name: unit, integration, and regression tests
+name: Unit, Integration, and Regression tests
 
 on:
   push:

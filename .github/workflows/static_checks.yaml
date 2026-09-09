@@ -1,4 +1,4 @@
-name: typecheck, linting and formatting
+name: Typecheck, Lint and Formatter
 
 on:
   push:

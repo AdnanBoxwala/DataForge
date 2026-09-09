@@ -1,7 +1,9 @@
 name: Build and Upload sphinx docs
 
 on:
-  push
+  push:
+    branches:
+      - main
 
 jobs:
   build:
