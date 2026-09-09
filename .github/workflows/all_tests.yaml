@@ -7,6 +7,7 @@ on:
 jobs:
   static-checks:
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{matrix.os}}
@@ -22,10 +23,24 @@ jobs:
         run: uv sync --locked
 
       - name: Unit tests
+        id: unit-tests
         run: make test-unit
 
       - name: Integration tests
+        id: integration-tests
         run: make test-integration
       
       - name: Regression tests
+        id: regression-tests
         run: make test-regression
+
+#      - name: Fail if any test failed
+#        if: ${{ always() }}
+#        shell: bash
+#        run: |
+#          if [[ "${{ steps.unit-tests.outcome }}" != "success" ||
+#                "${{ steps.integration-tests.outcome }}" != "success" ||
+#                "${{ steps.regression-tests.outcome }}" != "success" ]]; then
+#            echo "::error::One or more test suites failed"
+#            exit 1
+#          fi

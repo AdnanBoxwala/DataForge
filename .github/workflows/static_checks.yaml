@@ -27,5 +27,6 @@ jobs:
       - name: Lint
         run: make lint
       
-      - name: Foramt
+      - name: Format
         run: make format-check
+
