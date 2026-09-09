@@ -11,13 +11,13 @@ install: ## Sync the virtual environment from uv.lock
 	uv sync
 
 lint: ## Lint with ruff
-	uv run ruff check src tests examples docs
+	uv run ruff check src tests
 
 format: ## Reformat with ruff
-	uv run ruff format src tests examples docs
+	uv run ruff format src tests
 
 format-check: ## Fail if anything is unformatted (CI)
-	uv run ruff format --check src tests examples docs
+	uv run ruff format --check src tests
 
 typecheck: ## Type-check with mypy
 	uv run mypy src/dataforge

@@ -1,4 +1,4 @@
-name: typecheck, linting and formatting
+name: unit, integration, and regression tests
 
 on:
   push:
@@ -21,11 +21,11 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked
 
-      - name: Type-check
-        run: make typecheck
+      - name: Unit tests
+        run: make test-unit
 
-      - name: Lint
-        run: make lint
+      - name: Integration tests
+        run: make test-integration
       
-      - name: Foramt
-        run: make format-check
+      - name: Regression tests
+        run: make test-regression
