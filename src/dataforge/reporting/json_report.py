@@ -1,6 +1,5 @@
 import json
 import logging
-from datetime import UTC, datetime
 from pathlib import Path
 
 from dataforge.reporting.base import Reporter
@@ -10,19 +9,30 @@ logger = logging.getLogger(__name__)
 
 
 class JSONReporter(Reporter):
-    """Writes a `summary.json` containing check results."""
+    """Writes a `summary.json` into a run directory."""
 
-    def generate(self, result: AnalysisResult):
+    def __init__(self, run_dir: Path) -> None:
+        """Create a reporter that writes into an existing run directory.
+
+        The directory is supplied rather than derived here because the log file
+        for the run is opened in it long before there is a report to write.
+
+        Args:
+            run_dir: Directory to write `summary.json` into.
+        """
+        self.run_dir = run_dir
+
+    def generate(self, result: AnalysisResult) -> Path:
         """Generate the analysis report.
 
         Args:
             result: The `AnalysisResult` to be reported.
+
+        Returns:
+            The path to the generated report file.
         """
-        source_name = Path(result.source_file).stem
-        run_name = f"{source_name}_{datetime.now(tz=UTC):%Y%m%d_%H%M%SZ}"
-        run_dir = Path("output") / run_name
-        run_dir.mkdir(parents=True, exist_ok=True)
-        report_path = run_dir / "summary.json"
+        self.run_dir.mkdir(parents=True, exist_ok=True)
+        report_path = self.run_dir / "summary.json"
         logger.debug(f"Writing JSON report to '{report_path}'.")
 
         payload = {
@@ -34,3 +44,4 @@ class JSONReporter(Reporter):
         with report_path.open("w") as file:
             json.dump(payload, file, indent=4)
         logger.info(f"Report written to '{report_path}'.")
+        return report_path

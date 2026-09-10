@@ -3,6 +3,7 @@
 import pytest
 
 from dataforge.cli import main
+from dataforge.reporting import DEFAULT_LOG_NAME
 
 PASSING_SAMPLES = [10.0, 20.0]
 FAILING_SAMPLES = [10.0, 500.0]
@@ -14,6 +15,13 @@ def _run_cli(monkeypatch, *args: str) -> int:
     with pytest.raises(SystemExit) as exc_info:
         main()
     return exc_info.value.code
+
+
+def _run_dir(tmp_path):
+    """The single run directory the CLI created under tmp_path/output."""
+    run_dirs = [path for path in (tmp_path / "output").iterdir() if path.is_dir()]
+    assert len(run_dirs) == 1, f"expected exactly one run directory, found {run_dirs}"
+    return run_dirs[0]
 
 
 @pytest.fixture
@@ -110,6 +118,24 @@ def test_verbose_controls_debug_output(cli, capsys, extra_args, debug_expected):
     assert ("DEBUG" in capsys.readouterr().err) is debug_expected
 
 
+def test_a_log_file_is_written_by_default(cli, tmp_path):
+    """No flag needed: every run leaves its log beside the report."""
+    cli()
+
+    log_file = _run_dir(tmp_path) / DEFAULT_LOG_NAME
+
+    assert log_file.is_file()
+    assert "Starting analysis" in log_file.read_text()
+
+
+def test_the_log_sits_beside_the_summary(cli, tmp_path):
+    cli()
+
+    run_dir = _run_dir(tmp_path)
+
+    assert (run_dir / DEFAULT_LOG_NAME).parent == (run_dir / "summary.json").parent
+
+
 @pytest.mark.parametrize(
     "log_flag",
     [
@@ -117,12 +143,53 @@ def test_verbose_controls_debug_output(cli, capsys, extra_args, debug_expected):
         pytest.param("--log-file", id="long-flag"),
     ],
 )
-def test_log_file_receives_the_log_output(cli, tmp_path, log_flag):
-    log_file = tmp_path / "run.log"
+def test_log_file_argument_renames_the_log(cli, tmp_path, log_flag):
+    cli(log_flag, "analysis.log")
 
-    cli(log_flag, str(log_file))
+    run_dir = _run_dir(tmp_path)
+
+    assert (run_dir / "analysis.log").is_file()
+    assert not (run_dir / DEFAULT_LOG_NAME).exists()
+    assert "Starting analysis" in (run_dir / "analysis.log").read_text()
+
+
+def test_an_absolute_log_path_is_used_as_given(cli, tmp_path):
+    """The escape hatch for writing the log outside the run directory."""
+    log_file = tmp_path / "elsewhere" / "run.log"
+    log_file.parent.mkdir()
+
+    cli("--log-file", str(log_file))
 
     assert "Starting analysis" in log_file.read_text()
+    assert not (_run_dir(tmp_path) / DEFAULT_LOG_NAME).exists()
+
+
+def test_the_inputs_are_archived_beside_the_report(cli, tmp_path):
+    cli()
+
+    inputs_dir = _run_dir(tmp_path) / "inputs"
+
+    assert sorted(path.name for path in inputs_dir.iterdir()) == [
+        "measurement.mf4",
+        "rules.yaml",
+    ]
+
+
+def test_archived_inputs_match_the_originals(cli, tmp_path):
+    cli()
+
+    archived = _run_dir(tmp_path) / "inputs" / "measurement.mf4"
+
+    assert archived.read_bytes() == (tmp_path / "measurement.mf4").read_bytes()
+
+
+def test_a_failed_run_still_leaves_a_log(cli, tmp_path):
+    """The log is what explains the failure, so it must survive one."""
+    assert cli(measurement=tmp_path / "absent.mf4") == 1
+
+    log_text = (_run_dir(tmp_path) / DEFAULT_LOG_NAME).read_text()
+
+    assert "does not exist" in log_text
 
 
 @pytest.mark.parametrize(

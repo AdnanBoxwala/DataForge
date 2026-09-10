@@ -31,29 +31,44 @@ def analysis_result():
 
 
 @pytest.fixture
-def written_payload(tmp_path, monkeypatch, analysis_result):
-    """Generate a report in an isolated cwd and return (payload, report_path)."""
+def run_dir(tmp_path) -> Path:
+    """An existing run directory, as the CLI would have created."""
+    path = tmp_path / "output" / "drive_cycle_20260101_000000Z"
+    path.mkdir(parents=True)
+    return path
+
+
+@pytest.fixture
+def written_payload(run_dir, analysis_result):
+    """Generate a report and return (payload, report_path)."""
 
     def _generate(passed: bool = True):
-        monkeypatch.chdir(tmp_path)
-        JSONReporter().generate(analysis_result(passed))
-        reports = list(tmp_path.glob("output/*/summary.json"))
-        assert len(reports) == 1, f"expected exactly one report, found {reports}"
-        return json.loads(reports[0].read_text()), reports[0]
+        report_path = JSONReporter(run_dir).generate(analysis_result(passed))
+        return json.loads(report_path.read_text()), report_path
 
     return _generate
 
 
-def test_writes_a_summary_json(written_payload):
+def test_writes_summary_json_into_the_run_directory(written_payload, run_dir):
     _, report_path = written_payload()
 
+    assert report_path == run_dir / "summary.json"
     assert report_path.exists()
 
 
-def test_run_directory_is_named_after_the_source_file(written_payload):
-    _, report_path = written_payload()
+def test_generate_returns_the_report_path(run_dir, analysis_result):
+    """The Reporter contract declares a Path, and callers rely on it."""
+    assert JSONReporter(run_dir).generate(analysis_result()) == run_dir / "summary.json"
 
-    assert report_path.parent.name.startswith("drive_cycle_")
+
+def test_creates_the_run_directory_when_absent(tmp_path, analysis_result):
+    """The CLI creates it first, but a direct caller need not."""
+    absent = tmp_path / "output" / "not_yet_there"
+
+    report_path = JSONReporter(absent).generate(analysis_result())
+
+    assert absent.is_dir()
+    assert report_path.exists()
 
 
 @pytest.mark.parametrize(
@@ -96,16 +111,5 @@ def test_payload_includes_each_check_result(written_payload):
     ]
 
 
-def test_creates_the_output_directory_when_absent(
-    tmp_path, monkeypatch, analysis_result
-):
-    monkeypatch.chdir(tmp_path)
-    assert not (tmp_path / "output").exists()
-
-    JSONReporter().generate(analysis_result())
-
-    assert (tmp_path / "output").is_dir()
-
-
-def test_is_a_reporter():
-    assert isinstance(JSONReporter(), Reporter)
+def test_is_a_reporter(run_dir):
+    assert isinstance(JSONReporter(run_dir), Reporter)

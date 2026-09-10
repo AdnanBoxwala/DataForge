@@ -50,7 +50,16 @@ That demo passes every check and exits `0`.
 
 The `--measurement-file` argument accepts a path to a measurement file. DataForge selects an ingestor based on the file extension; currently, only the MDF `.mf4` ingestor is registered. Additional ingestors can be added without changing the CLI.
 
-The tool runs each check defined in the rules YAML against the matching channel and writes a JSON report to `output/<measurement-name>_<timestamp>/summary.json`, relative to the current working directory.
+The tool runs each check defined in the rules YAML against the matching channel and writes everything about the run into `output/<measurement-name>_<timestamp>/`, relative to the current working directory:
+
+```
+output/demo_20260906_080442Z/
+├── summary.json      the report
+├── dataforge.log     the log for this run
+└── inputs/           copies of the measurement and rules files
+```
+
+Inputs are copied so a run can be reproduced later even if the originals move or change. The directory is created before the analysis starts, so a run that fails still leaves the log explaining why.
 
 Use `--verbose` or `-v` to enable DEBUG-level logging:
 
@@ -61,14 +70,16 @@ uv run dataforge \
   --verbose
 ```
 
-Use `--log-file` to additionally write log output to a file:
+A log file is always written into the run directory. Use `--log-file` to change its name:
 
 ```bash
 uv run dataforge \
   --measurement-file examples/demo.mf4 \
   --rules examples/demo_rules.yaml \
-  --log-file output/dataforge.log
+  --log-file analysis.log
 ```
+
+A bare name lands in the run directory; pass an absolute path to write the log somewhere else entirely.
 
 ### Exit codes
 
