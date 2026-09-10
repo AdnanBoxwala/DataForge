@@ -146,7 +146,7 @@ src/dataforge/
 ├── reporting/       # report generation (JSON)
 ├── structs/         # shared data types (SignalSet, AnalysisResult, ...)
 ├── enums/           # shared enumerations (Result, ...)
-├── logging.py       # logging configuration
+├── log_config.py    # logging configuration (not `logging.py`: it would shadow the stdlib)
 └── cli.py           # CLI entry point
 examples/            # small demo measurement + rules, and the script that makes them
 tests/

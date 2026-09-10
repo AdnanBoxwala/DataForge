@@ -5,7 +5,7 @@ from pathlib import Path
 
 from dataforge.engine import run
 from dataforge.enums.result import Result
-from dataforge.logging import configure_logging
+from dataforge.log_config import configure_logging
 from dataforge.reporting import DEFAULT_LOG_NAME, create_run_directory
 
 logger = logging.getLogger(__name__)
