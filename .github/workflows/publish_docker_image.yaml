@@ -32,12 +32,26 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # ECR
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
+        with:
+          role-to-assume: arn:aws:iam::220625057922:role/dataforge-ecr-access-role
+          aws-region: eu-central-1
+      
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
       # This step uses [docker/metadata-action](https://github.com/docker/metadata-action#about) to extract tags and labels that will be applied to the specified image. The `id` "meta" allows the output of this step to be referenced in a subsequent step. The `images` value provides the base name for the tags and labels.
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: 
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            ${{ steps.login-ecr.outputs.registry }}/dataforge-220625057922
           tags: |
             type=semver,pattern={{version}},value=${{ github.event.release.tag_name }}
             type=raw,value=latest,enable=${{ github.event.release.prerelease == false }}
@@ -50,36 +64,14 @@ jobs:
         with:
           context: .
           push: true
-          provenance: false
+          provenance: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       
       # This step generates an artifact attestation for the image, which is an unforgeable statement about where and how it was built. It increases supply chain security for people who consume the image. For more information, see [Using artifact attestations to establish provenance for builds](/actions/security-guides/using-artifact-attestations-to-establish-provenance-for-builds).
-      - name: Generate artifact attestation
-        uses: actions/attest@v4
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-          subject-digest: ${{ steps.push.outputs.digest }}
-          push-to-registry: true
-      
-      # ECR
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
-        with:
-          role-to-assume: arn:aws:iam::220625057922:role/dataforge-ecr-access-role
-          aws-region: eu-central-1
-      
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-      
-      - name: Build, tag, and push docker image to Amazon ECR
-        env:
-          REGISTRY_ECR: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY_ECR: dataforge-220625057922
-          IMAGE_TAG: ${{ steps.meta.outputs.tags }}
-        run: |
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }} \
-            ${{ env.REGISTRY_ECR }}/${{ env.REPOSITORY_ECR }}:${{ env.IMAGE_TAG }}
-          docker push \
-            ${{ env.REGISTRY_ECR }}/${{ env.REPOSITORY_ECR }}:${{ env.IMAGE_TAG}}      
+      #- name: Generate artifact attestation
+      #  uses: actions/attest@v4
+      #  with:
+      #    subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
+      #    subject-digest: ${{ steps.push.outputs.digest }}
+      #    push-to-registry: true    
