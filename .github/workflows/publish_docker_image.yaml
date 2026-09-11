@@ -19,7 +19,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-      attestations: write
+      #attestations: write
       id-token: write
 
     steps:
@@ -64,7 +64,7 @@ jobs:
         with:
           context: .
           push: true
-          provenance: true
+          provenance: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       
