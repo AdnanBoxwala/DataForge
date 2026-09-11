@@ -1,10 +1,10 @@
-"""Unit tests for `dataforge.logging`."""
+"""Unit tests for `dataforge.log_config`."""
 
 import logging
 
 import pytest
 
-from dataforge.logging import configure_logging
+from dataforge.log_config import configure_logging
 
 
 @pytest.mark.parametrize(

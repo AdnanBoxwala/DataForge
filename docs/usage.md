@@ -14,7 +14,7 @@ files it is pointed at.
 | `--measurement-file` | `-f` | Path to the measurement file. Required. |
 | `--rules` | `-r` | Path to the validation rules YAML. Required. |
 | `--verbose` | `-v` | Emit DEBUG-level logging instead of INFO. |
-| `--log-file` | `-log` | Additionally write log output to this file. |
+| `--log-file` | `-log` | Name of the log file inside the run directory. Defaults to `dataforge.log`; an absolute path is used as given. |
 
 Logs go to stderr; the report path goes to stdout. That separation means the report path can
 be captured by a pipeline without log lines contaminating it.
@@ -33,8 +33,21 @@ verdict is inside it.
 
 ## Output
 
-A JSON report is written to `output/<measurement-name>_<timestamp>/summary.json`, relative to
-the current working directory:
+Each run gets its own directory under `output/`, relative to the current working directory:
+
+```
+output/demo_20260906_080442Z/
+├── summary.json      the report
+├── dataforge.log     the log for this run
+└── inputs/           copies of the measurement and rules files
+```
+
+The inputs are copied so the run can be reproduced later even if the originals move or
+change. The directory is created before the analysis begins rather than after it finishes,
+which is what allows the log to be written into it — and means a failed run still leaves
+behind the log that explains the failure.
+
+`summary.json` holds the report:
 
 ```json
 {

@@ -133,3 +133,61 @@ def test_invalid_rules_raise_key_error(
 
     with pytest.raises(KeyError, match=match):
         run(measurement, make_rules_yaml([rule]))
+
+
+def test_creates_its_own_run_directory_when_not_given_one(
+    tmp_path, monkeypatch, make_mdf, make_rules_yaml, range_rule
+):
+    """`run()` is usable standalone; only the CLI supplies a run directory."""
+    monkeypatch.chdir(tmp_path)
+    measurement = make_mdf({"speed": [10.0]})
+
+    run(measurement, make_rules_yaml([range_rule()]))
+
+    assert list(tmp_path.glob("output/*/summary.json"))
+
+
+def test_writes_into_a_supplied_run_directory(
+    tmp_path, monkeypatch, make_mdf, make_rules_yaml, range_rule
+):
+    monkeypatch.chdir(tmp_path)
+    run_dir = tmp_path / "chosen"
+    run_dir.mkdir()
+    measurement = make_mdf({"speed": [10.0]})
+
+    run(measurement, make_rules_yaml([range_rule()]), run_dir=run_dir)
+
+    assert (run_dir / "summary.json").is_file()
+    assert not (tmp_path / "output").exists()
+
+
+def test_archives_the_inputs(
+    tmp_path, monkeypatch, make_mdf, make_rules_yaml, range_rule
+):
+    monkeypatch.chdir(tmp_path)
+    run_dir = tmp_path / "chosen"
+    measurement = make_mdf({"speed": [10.0]})
+
+    run(measurement, make_rules_yaml([range_rule()]), run_dir=run_dir)
+
+    assert sorted(path.name for path in (run_dir / "inputs").iterdir()) == [
+        "measurement.mf4",
+        "rules.yaml",
+    ]
+
+
+def test_inputs_are_archived_even_when_the_run_fails(
+    tmp_path, monkeypatch, make_mdf, make_rules_yaml
+):
+    """Archiving happens up front, so a failure still records what was given."""
+    monkeypatch.chdir(tmp_path)
+    run_dir = tmp_path / "chosen"
+    measurement = make_mdf({"speed": [10.0]})
+    rules = make_rules_yaml(
+        [{"type": "no_such_check", "channel": "speed", "parameters": {}}]
+    )
+
+    with pytest.raises(KeyError):
+        run(measurement, rules, run_dir=run_dir)
+
+    assert (run_dir / "inputs" / "measurement.mf4").is_file()

@@ -162,18 +162,6 @@ wheels = [
 ]
 
 [[package]]
-name = "awscliv2"
-version = "2.3.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pip" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a2/1d/98a80461aad567164033e99780d31165626e57c8a86e668077f80e512a5e/awscliv2-2.3.1.tar.gz", hash = "sha256:5fbbf104bcd7796b7af104bd6af99f6e153208883399aeff830d97b3ea34f7ae", size = 12090, upload-time = "2024-09-04T10:19:18.774Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/dd/b6/be25b1ddf45e9c73fdd26e95daa2892742932dc7c602844822c1fff5dab3/awscliv2-2.3.1-py3-none-any.whl", hash = "sha256:ab4bc182b0cfba0f6872061cbb1bd6abfbfc1e4016fa5de40b7a2d564eca267e", size = 13510, upload-time = "2024-09-04T10:19:17.467Z" },
-]
-
-[[package]]
 name = "babel"
 version = "2.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -680,7 +668,7 @@ wheels = [
 
 [[package]]
 name = "dataforge"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "asammdf" },
@@ -690,7 +678,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "awscliv2" },
     { name = "furo" },
     { name = "k9s" },
     { name = "mypy" },
@@ -712,7 +699,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "awscliv2", specifier = ">=2.3.1" },
     { name = "furo", specifier = ">=2025.12.19" },
     { name = "k9s", specifier = ">=1.0.56" },
     { name = "mypy", specifier = ">=2.3.1" },
@@ -1671,15 +1657,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a0/9e/567376582da58f5fe8e4f579db2bcfbf243cf619a5825bdf1023ad1436b3/pendulum-3.2.0-cp314-cp314-win_amd64.whl", hash = "sha256:e5bbb92b155cd5018b3cf70ee49ed3b9c94398caaaa7ed97fe41e5bb5a968418", size = 258817, upload-time = "2026-01-30T11:21:53.074Z" },
     { url = "https://files.pythonhosted.org/packages/95/67/dfffd7eb50d67fa821cd4d92cf71575ead6162930202bc40dfcedf78c38c/pendulum-3.2.0-cp314-cp314-win_arm64.whl", hash = "sha256:d53134418e04335c3029a32e9341cccc9b085a28744fb5ee4e6a8f5039363b1a", size = 253292, upload-time = "2026-01-30T11:21:54.484Z" },
     { url = "https://files.pythonhosted.org/packages/02/fb/d65db067a67df7252f18b0cb7420dda84078b9e8bfb375215469c14a50be/pendulum-3.2.0-py3-none-any.whl", hash = "sha256:f3a9c18a89b4d9ef39c5fa6a78722aaff8d5be2597c129a3b16b9f40a561acf3", size = 114111, upload-time = "2026-01-30T11:22:22.361Z" },
-]
-
-[[package]]
-name = "pip"
-version = "26.2.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ae/15/4500e320e6b101ec3b719ae85b697d9940b6cda672bc555bd6016fc60c6f/pip-26.2.1.tar.gz", hash = "sha256:f6ad667e89a1fe78046c8f13232b247200f5258d7828f3f7883d660878e0813f", size = 1848877, upload-time = "2026-08-04T22:51:14.148Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/6e/1736e5b4ae2b778ef2f81c47d797de9f891d4d8acb047a24ca37a60294dd/pip-26.2.1-py3-none-any.whl", hash = "sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e", size = 1816632, upload-time = "2026-08-04T22:51:12.472Z" },
 ]
 
 [[package]]

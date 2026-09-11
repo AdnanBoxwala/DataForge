@@ -13,4 +13,4 @@ Generated from the docstrings in ``src/dataforge``.
    reporting
    structs
    enums
-   logging
+   log_config
