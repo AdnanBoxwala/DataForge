@@ -80,6 +80,6 @@ jobs:
           IMAGE_TAG: ${{ steps.meta.outputs.tags }}
         run: |
           docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }} \
-            ${{ REGISTRY_ECR }}/${{ REPOSITORY_ECR }}:${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY_ECR }}/${{ env.REPOSITORY_ECR }}:${{ env.IMAGE_TAG }}
           docker push \
-            ${{ REGISTRY_ECR }}/${{ REPOSITORY_ECR }}:${{ env.IMAGE_TAG}}      
+            ${{ env.REGISTRY_ECR }}/${{ env.REPOSITORY_ECR }}:${{ env.IMAGE_TAG}}      
