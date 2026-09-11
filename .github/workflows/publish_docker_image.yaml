@@ -79,7 +79,7 @@ jobs:
           REPOSITORY_ECR: dataforge-220625057922
           IMAGE_TAG: ${{ steps.meta.outputs.tags }}
         run: |
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ IMAGE_TAG }} \
-            ${{ REGISTRY_ECR }}/${{ REPOSITORY_ECR }}:${{ IMAGE_TAG }}
+          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }} \
+            ${{ REGISTRY_ECR }}/${{ REPOSITORY_ECR }}:${{ env.IMAGE_TAG }}
           docker push \
-            ${{ REGISTRY_ECR }}/${{ REPOSITORY_ECR }}:${{ IMAGE_TAG}}      
+            ${{ REGISTRY_ECR }}/${{ REPOSITORY_ECR }}:${{ env.IMAGE_TAG}}      
