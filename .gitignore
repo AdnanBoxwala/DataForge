@@ -222,3 +222,10 @@ __marimo__/
 .vscode/
 TODO.txt
 output/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
