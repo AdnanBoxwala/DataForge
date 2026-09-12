@@ -53,6 +53,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       # Define IMAGE:TAG name -> returned in output as tags
+      # WARNING: will return warning as not all tags can be resolved
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
@@ -61,8 +62,9 @@ jobs:
             ${{ env.GH_REGISTRY }}/${{ env.GH_REPOSITORY }}
             ${{ steps.login-ecr.outputs.registry }}/dataforge-220625057922
           tags: |
-            type=semver,pattern={{version}},value=${{ github.event.release.tag_name || format('{0}{1}', inputs.tag_name, inputs.suffix) }}
+            type=semver,pattern={{version}},value=${{ github.event.release.tag_name }}
             type=sha,format=short
+            type=raw,value=format('{0}{1}', inputs.tag_name, inputs.suffix)
 
       # Build and push image
       - name: Build and push Docker image
