@@ -222,6 +222,7 @@ __marimo__/
 .vscode/
 TODO.txt
 output/
+production_like_mf4/
 
 # Terraform
 **/.terraform/
