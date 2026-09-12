@@ -64,7 +64,8 @@ jobs:
           tags: |
             type=semver,pattern={{version}},value=${{ github.event.release.tag_name }}
             type=sha,format=short
-            type=raw,value=${{ format('{0}{1}', inputs.tag_name, inputs.suffix) }}
+            type=raw,value=${{ format('{0}{1}', inputs.tag_name, inputs.suffix) }}
+            type=raw,value=latest,enable=${{ github.event_name == 'release' && !github.event.release.prerelease }}
 
       # Build and push image
       - name: Build and push Docker image
