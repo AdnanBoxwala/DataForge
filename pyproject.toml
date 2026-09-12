@@ -1,6 +1,6 @@
 [project]
 name = "dataforge"
-version = "0.3.1"
+version = "0.3.2"
 description = "A CLI tool that ingests vehicle measurement data, validates it against configurable rules, and produces a pass/fail report."
 readme = "README.md"
 authors = [
