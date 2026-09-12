@@ -61,7 +61,7 @@ jobs:
             ${{ env.GH_REGISTRY }}/${{ env.GH_REPOSITORY }}
             ${{ steps.login-ecr.outputs.registry }}/dataforge-220625057922
           tags: |
-            type=semver,pattern={{version}},value=${{ github.event.release.tag_name || format('{0}{1}', inputs.tag_name. inputs.suffix) }}
+            type=semver,pattern={{version}},value=${{ github.event.release.tag_name || format('{0}{1}', inputs.tag_name, inputs.suffix) }}
             type=sha,format=short
 
       # Build and push image
